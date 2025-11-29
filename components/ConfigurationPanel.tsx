@@ -1,7 +1,7 @@
 import React from 'react';
 import { GenerationConfig, PostPurpose, PostTone, PostFormat } from '../types';
 import { PURPOSE_OPTIONS, TONE_OPTIONS, FORMAT_OPTIONS } from '../constants';
-import { Settings2, Users, Palette } from 'lucide-react';
+import { Settings2, Users, Palette, Type } from 'lucide-react';
 
 interface ConfigurationPanelProps {
   config: GenerationConfig;
@@ -21,6 +21,10 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ config, setConf
       : [...current, format];
     handleChange('formatStyles', next);
   };
+
+  // Separate Rich Text options from standard formatting
+  const richTextOptions = [PostFormat.BoldItalics, PostFormat.UniqueFonts];
+  const standardOptions = FORMAT_OPTIONS.filter(f => !richTextOptions.includes(f));
 
   return (
     <div className="glass-panel rounded-2xl overflow-hidden">
@@ -119,9 +123,9 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ config, setConf
           </div>
 
           <div className="space-y-2 pt-2">
-            <label className="text-xs font-semibold text-slate-600">Formatting & Typography</label>
+            <label className="text-xs font-semibold text-slate-600">Standard Formatting</label>
             <div className="flex flex-wrap gap-2">
-              {FORMAT_OPTIONS.map(fmt => (
+              {standardOptions.map(fmt => (
                 <button
                   key={fmt}
                   onClick={() => toggleFormat(fmt)}
@@ -135,8 +139,32 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ config, setConf
                 </button>
               ))}
             </div>
-            <p className="text-[10px] text-slate-400 mt-1">
-              Select 'Bold and Italics' or 'Unique Fonts' to add rich text formatting to your generated caption.
+          </div>
+
+          {/* Rich Text Options - Highlighted */}
+          <div className="space-y-2 pt-2">
+            <label className="text-xs font-semibold text-slate-600 flex items-center gap-2">
+                <Type className="w-3 h-3 text-indigo-500" /> Rich Text Enhancements
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              {richTextOptions.map(fmt => (
+                <button
+                  key={fmt}
+                  onClick={() => toggleFormat(fmt)}
+                  className={`px-3 py-2.5 rounded-xl text-xs font-semibold border transition-all flex items-center justify-center gap-2 ${
+                    config.formatStyles.includes(fmt)
+                      ? 'bg-indigo-600 text-white border-indigo-700 shadow-md ring-2 ring-indigo-200 ring-offset-1'
+                      : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-indigo-200 hover:text-indigo-600'
+                  }`}
+                >
+                  {fmt === PostFormat.BoldItalics && <span className="font-serif italic font-bold text-sm">B / I</span>}
+                  {fmt === PostFormat.UniqueFonts && <span className="font-mono text-xs">𝓕𝓸𝓷𝓽𝓼</span>}
+                  {fmt}
+                </button>
+              ))}
+            </div>
+            <p className="text-[10px] text-slate-400 mt-1 leading-tight">
+              Enable these to make your post stand out visually on the LinkedIn feed.
             </p>
           </div>
         </div>

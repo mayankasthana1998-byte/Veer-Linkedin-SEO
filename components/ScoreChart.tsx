@@ -15,7 +15,7 @@ const ScoreChart: React.FC<ScoreChartProps> = ({ score }) => {
   let color = '#ef4444'; // Red (bad)
   if (score > 50) color = '#eab308'; // Yellow (okay)
   if (score > 80) color = '#22c55e'; // Green (good)
-  if (score > 95) color = '#818cf8'; // Indigo/Perfect (excellent)
+  if (score > 95) color = '#6366f1'; // Indigo/Perfect (excellent)
 
   return (
     <div className="relative h-48 w-full flex flex-col items-center justify-center">
@@ -34,13 +34,13 @@ const ScoreChart: React.FC<ScoreChartProps> = ({ score }) => {
             stroke="none"
           >
             <Cell key="cell-score" fill={color} />
-            <Cell key="cell-remaining" fill="#334155" /> {/* Slate-700 */}
+            <Cell key="cell-remaining" fill="#e2e8f0" /> {/* Slate-200 for background track */}
           </Pie>
         </PieChart>
       </ResponsiveContainer>
       <div className="absolute top-[60%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
-        <span className="text-4xl font-bold text-white block">{score}</span>
-        <span className="text-xs text-slate-400 uppercase tracking-wider">SEO Score</span>
+        <span className="text-4xl font-bold text-slate-900 block">{score}</span>
+        <span className="text-xs text-slate-500 uppercase tracking-wider font-semibold">SEO Score</span>
       </div>
     </div>
   );

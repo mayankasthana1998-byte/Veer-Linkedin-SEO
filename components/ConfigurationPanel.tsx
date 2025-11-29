@@ -1,7 +1,7 @@
 import React from 'react';
 import { GenerationConfig, PostPurpose, PostTone, PostFormat } from '../types';
 import { PURPOSE_OPTIONS, TONE_OPTIONS, FORMAT_OPTIONS } from '../constants';
-import { Settings2, Target, Type, MapPin, Building2, Palette } from 'lucide-react';
+import { Settings2, Users, Palette } from 'lucide-react';
 
 interface ConfigurationPanelProps {
   config: GenerationConfig;
@@ -23,123 +23,139 @@ const ConfigurationPanel: React.FC<ConfigurationPanelProps> = ({ config, setConf
   };
 
   return (
-    <div className="bg-slate-800/40 border border-slate-700 rounded-2xl p-6 space-y-6">
-      <div className="flex items-center gap-2 mb-2">
-        <Settings2 className="w-5 h-5 text-indigo-400" />
-        <h3 className="text-lg font-semibold text-white">Strategy Configuration</h3>
+    <div className="glass-panel rounded-2xl overflow-hidden">
+      
+      {/* Header */}
+      <div className="px-5 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
+        <div className="p-1.5 bg-indigo-50 rounded-md">
+          <Settings2 className="w-4 h-4 text-indigo-600" />
+        </div>
+        <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide">Strategy Configuration</h3>
       </div>
 
-      {/* Target & Niche */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="p-5 space-y-8">
+        
+        {/* Section 1: Audience & Context */}
+        <div className="space-y-4">
+          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+            <Users className="w-3 h-3" /> Audience & Context
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-600">Target Audience</label>
+              <input
+                type="text"
+                value={config.targetAudience}
+                onChange={(e) => handleChange('targetAudience', e.target.value)}
+                className="input-field"
+                placeholder="e.g. CTOs, Founders"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-600">Niche / Industry</label>
+              <input
+                type="text"
+                value={config.niche}
+                onChange={(e) => handleChange('niche', e.target.value)}
+                className="input-field"
+                placeholder="e.g. SaaS, FinTech"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-600">Geography</label>
+              <input
+                type="text"
+                value={config.geoDemographics}
+                onChange={(e) => handleChange('geoDemographics', e.target.value)}
+                className="input-field"
+                placeholder="e.g. USA, India, Global"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-600">Language</label>
+              <input
+                type="text"
+                value={config.language}
+                onChange={(e) => handleChange('language', e.target.value)}
+                className="input-field"
+                placeholder="e.g. English (US)"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="h-px bg-slate-100 w-full"></div>
+
+        {/* Section 2: Style & Format */}
+        <div className="space-y-4">
+           <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+            <Palette className="w-3 h-3" /> Tone & Style
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-600">Post Goal</label>
+              <div className="relative">
+                <select
+                  value={config.purpose}
+                  onChange={(e) => handleChange('purpose', e.target.value as PostPurpose)}
+                  className="input-field cursor-pointer"
+                >
+                  {PURPOSE_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                </select>
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-600">Voice / Tone</label>
+              <div className="relative">
+                <select
+                  value={config.tone}
+                  onChange={(e) => handleChange('tone', e.target.value as PostTone)}
+                  className="input-field cursor-pointer"
+                >
+                  {TONE_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-2 pt-2">
+            <label className="text-xs font-semibold text-slate-600">Formatting & Typography</label>
+            <div className="flex flex-wrap gap-2">
+              {FORMAT_OPTIONS.map(fmt => (
+                <button
+                  key={fmt}
+                  onClick={() => toggleFormat(fmt)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
+                    config.formatStyles.includes(fmt)
+                      ? 'bg-indigo-50 border-indigo-200 text-indigo-700 shadow-sm ring-1 ring-indigo-100'
+                      : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300'
+                  }`}
+                >
+                  {fmt}
+                </button>
+              ))}
+            </div>
+            <p className="text-[10px] text-slate-400 mt-1">
+              Select 'Bold and Italics' or 'Unique Fonts' to add rich text formatting to your generated caption.
+            </p>
+          </div>
+        </div>
+        
+        <div className="h-px bg-slate-100 w-full"></div>
+
+        {/* Brand Guidelines */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-300 flex items-center gap-2">
-            <Target className="w-4 h-4" /> Target Audience
+          <label className="text-xs font-semibold text-slate-600 flex items-center gap-2">
+             Brand Guidelines (Optional)
           </label>
-          <input
-            type="text"
-            value={config.targetAudience}
-            onChange={(e) => handleChange('targetAudience', e.target.value)}
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none"
-            placeholder="e.g. CTOs, Founders"
+          <textarea
+            value={config.brandGuidelines}
+            onChange={(e) => handleChange('brandGuidelines', e.target.value)}
+            className="input-field min-h-[80px] resize-none"
+            placeholder="Paste brand voice rules, prohibited words, or specific company terminology here..."
           />
         </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-300 flex items-center gap-2">
-            <Building2 className="w-4 h-4" /> Niche / Industry
-          </label>
-          <input
-            type="text"
-            value={config.niche}
-            onChange={(e) => handleChange('niche', e.target.value)}
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none"
-            placeholder="e.g. SaaS, FinTech"
-          />
-        </div>
-      </div>
 
-      {/* Purpose & Tone */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-300">Goal / Purpose</label>
-          <select
-            value={config.purpose}
-            onChange={(e) => handleChange('purpose', e.target.value as PostPurpose)}
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none"
-          >
-            {PURPOSE_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-          </select>
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-300">Voice / Tone</label>
-          <select
-            value={config.tone}
-            onChange={(e) => handleChange('tone', e.target.value as PostTone)}
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none"
-          >
-            {TONE_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-          </select>
-        </div>
-      </div>
-
-      {/* Geo & Language */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-300 flex items-center gap-2">
-             <MapPin className="w-4 h-4" /> Geography
-          </label>
-          <input
-            type="text"
-            value={config.geoDemographics}
-            onChange={(e) => handleChange('geoDemographics', e.target.value)}
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none"
-            placeholder="e.g. North America, India"
-          />
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-300 flex items-center gap-2">
-            <Type className="w-4 h-4" /> Language
-          </label>
-          <input
-            type="text"
-            value={config.language}
-            onChange={(e) => handleChange('language', e.target.value)}
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none"
-            placeholder="e.g. English, Spanish"
-          />
-        </div>
-      </div>
-
-      {/* Formatting Options */}
-      <div className="space-y-3">
-        <label className="text-sm font-medium text-slate-300">Formatting Styles</label>
-        <div className="flex flex-wrap gap-2">
-          {FORMAT_OPTIONS.map(fmt => (
-            <button
-              key={fmt}
-              onClick={() => toggleFormat(fmt)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                config.formatStyles.includes(fmt)
-                  ? 'bg-indigo-600 border-indigo-500 text-white'
-                  : 'bg-slate-900 border-slate-700 text-slate-400 hover:border-indigo-500/50'
-              }`}
-            >
-              {fmt}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Brand Guidelines */}
-      <div className="space-y-2">
-        <label className="text-sm font-medium text-slate-300 flex items-center gap-2">
-          <Palette className="w-4 h-4" /> Brand Guidelines (Optional)
-        </label>
-        <textarea
-          value={config.brandGuidelines}
-          onChange={(e) => handleChange('brandGuidelines', e.target.value)}
-          className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none h-20 resize-none"
-          placeholder="Paste brand voice rules, prohibited words, or specific company terminology here..."
-        />
       </div>
     </div>
   );
